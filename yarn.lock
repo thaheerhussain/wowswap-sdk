@@ -850,10 +850,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@cheeseswap/cheeseswap-core@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@cheeseswap/cheeseswap-core/-/cheeseswap-core-0.1.4.tgz#8624624c404b0d4c3bba6c3b5c19d980de2cbb88"
-  integrity sha512-NUBhkplKcXHawbTYK5yuveydMMQfwhoRXdpRSPYyVHSVreKCc6q5PbDiFBX+S2LFjbxZgdf2ypdgmOXNIeEHzQ==
+"@cheeseswap/cheeseswap-core@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@cheeseswap/cheeseswap-core/-/cheeseswap-core-0.1.5.tgz#3ed897cb5e51624c3a852f6c88ea486e52bda26a"
+  integrity sha512-npzuwBqedOq22HZfWM90jOp0iJDUu8fkKqRD3k4CW2MA8HlT2AuJoftrRaD5iUun8GAkvxTMQUfLw1+Fj5VhdA==
   dependencies:
     truffle "^5.1.41"
     truffle-flattener "^1.4.4"
@@ -7844,9 +7844,9 @@ truffle-hdwallet-provider@^1.0.17:
     websocket "^1.0.28"
 
 truffle@^5.1.41:
-  version "5.1.49"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.1.49.tgz#c9edc95192047ff4d170fcad235d26d0c4545de5"
-  integrity sha512-SkCfYRPhruowxH+qpJBAvM0u5+j/LK51U85ErXeiuRhyCNEWMNjUtISHTlEZ0KLr0Kki68iXk+o2UekN4Nlp5g==
+  version "5.1.50"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.1.50.tgz#78d7f06f0fbd6ec6d5651d4ba90cecf2c16d332f"
+  integrity sha512-SCAn29Z2i713BsUVfxRqM7AcvBuodTfFa1O9IX2KtqYs4/ACjJCp+702aRb63R9NowCeQ8WawrgRbYlmzCtpPA==
   dependencies:
     app-module-path "^2.2.0"
     mocha "8.1.2"
