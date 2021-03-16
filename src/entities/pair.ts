@@ -20,6 +20,7 @@ import {
 import { sqrt, parseBigintIsh } from '../utils'
 import { InsufficientReservesError, InsufficientInputAmountError } from '../errors'
 import { Token } from './token'
+import { id } from '..'
 
 let PAIR_ADDRESS_CACHE: { [token0Address: string]: { [token1Address: string]: string } } = {}
 
@@ -36,9 +37,9 @@ export class Pair {
         [tokens[0].address]: {
           ...PAIR_ADDRESS_CACHE?.[tokens[0].address],
           [tokens[1].address]: getCreate2Address(
-            FACTORY_ADDRESS,
+            FACTORY_ADDRESS[id.getId()],
             keccak256(['bytes'], [pack(['address', 'address'], [tokens[0].address, tokens[1].address])]),
-            INIT_CODE_HASH
+            INIT_CODE_HASH[id.getId()]
           )
         }
       }

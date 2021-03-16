@@ -70,5 +70,12 @@ export const WETH = {
     18,
     'WBNB',
     'Wrapped BNB'
+  ),
+  [ChainId.LOCALNET]: new Token(
+    ChainId.LOCALNET,
+    '0x22A4Cc8c2C6881983ceBAb4d23cd952654Be2F1D',
+    18,
+    'WBNB',
+    'Wrapped BNB'
   )
 }

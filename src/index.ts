@@ -15,3 +15,15 @@ export * from './errors'
 export * from './entities'
 export * from './router'
 export * from './fetcher'
+
+import { ChainId } from './constants'
+
+export const id = {
+  _current: ChainId.MAINNET,
+  setId: function(id: ChainId) {
+    this._current = id;
+  },
+  getId: function() {
+    return this._current;
+  }
+}
