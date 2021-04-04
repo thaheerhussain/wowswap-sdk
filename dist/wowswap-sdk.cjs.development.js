@@ -1391,14 +1391,21 @@ var Router = /*#__PURE__*/function () {
 
     !!(etherIn && etherOut) ?  invariant(false, 'ETHER_IN_OUT')  : void 0;
     !(options.ttl > 0) ?  invariant(false, 'TTL')  : void 0;
-    var to = validateAndParseAddress(options.recipient);
-    var amountIn = toHex(trade.maximumAmountIn(options.allowedSlippage));
-    var amountOut = toHex(trade.minimumAmountOut(options.allowedSlippage));
-    var path = trade.route.path.map(function (token) {
-      return token.address;
-    });
-    var deadline = "0x" + (Math.floor(new Date().getTime() / 1000) + options.ttl).toString(16);
-    var useFeeOnTransfer = Boolean(options.feeOnTransfer);
+    var trader = validateAndParseAddress(options.recipient);
+    var amountIn = toHex(trade.maximumAmountIn(options.allowedSlippage)); // const amountOut: string = toHex(trade.minimumAmountOut(options.allowedSlippage))
+    // const path: string[] = trade.route.path.map(token => token.address)
+
+    var deadline = "0x" + (Math.floor(new Date().getTime() / 1000) + options.ttl).toString(16); // const useFeeOnTransfer = Boolean(options.feeOnTransfer)
+
+    console.log('--------------------- SwapParameters');
+    console.log('+++++++++++++++++++++ trade');
+    console.log(trade);
+    console.log('+++++++++++++++++++++ options');
+    console.log(options);
+    var leverageFactor = "0x" + (options.leverageFactor || 1).toString(16);
+    var isOpenPosition = options.isOpenPosition,
+        lendable = options.lendable,
+        tradeble = options.tradeble;
     var methodName;
     var args;
     var value;
@@ -1406,47 +1413,35 @@ var Router = /*#__PURE__*/function () {
     switch (trade.tradeType) {
       case exports.TradeType.EXACT_INPUT:
         if (etherIn) {
-          methodName = useFeeOnTransfer ? 'swapExactETHForTokensSupportingFeeOnTransferTokens' : 'swapExactETHForTokens'; // (uint amountOutMin, address[] calldata path, address to, uint deadline)
-
-          args = [amountOut, path, to, deadline];
+          methodName = 'openPositionETH';
+          args = [leverageFactor, '0x0', tradeble, trader, deadline];
           value = amountIn;
         } else if (etherOut) {
-          methodName = useFeeOnTransfer ? 'swapExactTokensForETHSupportingFeeOnTransferTokens' : 'swapExactTokensForETH'; // (uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
-
-          args = [amountIn, amountOut, path, to, deadline];
+          methodName = 'closePositionETH';
+          args = [trader, amountIn, tradeble, deadline];
+          value = ZERO_HEX;
+        } else if (isOpenPosition) {
+          methodName = 'openPosition';
+          args = [trader, amountIn, lendable, tradeble, leverageFactor, deadline];
           value = ZERO_HEX;
         } else {
-          methodName = useFeeOnTransfer ? 'swapExactTokensForTokensSupportingFeeOnTransferTokens' : 'swapExactTokensForTokens'; // (uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
-
-          args = [amountIn, amountOut, path, to, deadline];
+          methodName = 'closePosition';
+          args = [trader, amountIn, tradeble, deadline];
           value = ZERO_HEX;
         }
 
         break;
 
       case exports.TradeType.EXACT_OUTPUT:
-        !!useFeeOnTransfer ?  invariant(false, 'EXACT_OUT_FOT')  : void 0;
-
-        if (etherIn) {
-          methodName = 'swapETHForExactTokens'; // (uint amountOut, address[] calldata path, address to, uint deadline)
-
-          args = [amountOut, path, to, deadline];
-          value = amountIn;
-        } else if (etherOut) {
-          methodName = 'swapTokensForExactETH'; // (uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-
-          args = [amountOut, amountIn, path, to, deadline];
-          value = ZERO_HEX;
-        } else {
-          methodName = 'swapTokensForExactTokens'; // (uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-
-          args = [amountOut, amountIn, path, to, deadline];
-          value = ZERO_HEX;
-        }
-
-        break;
+        throw new Error('Unsupported method');
     }
 
+    console.log('--=-=-=-=-=-=-=-=-=-=-=-= Results  ');
+    console.log({
+      methodName: methodName,
+      args: args,
+      value: value
+    });
     return {
       methodName: methodName,
       args: args,

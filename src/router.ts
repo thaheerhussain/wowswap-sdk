@@ -26,6 +26,19 @@ export interface TradeOptions {
    * Whether any of the tokens in the path are fee on transfer tokens, which should be handled with special methods
    */
   feeOnTransfer?: boolean
+
+  /**
+   * Leverage Margin Factor
+   */
+  leverageFactor?: number
+
+  /**
+   * Set is open or close position
+   */
+  isOpenPosition?: boolean
+
+  tradeble: string
+  lendable: string
 }
 
 /**
@@ -72,12 +85,21 @@ export abstract class Router {
     invariant(!(etherIn && etherOut), 'ETHER_IN_OUT')
     invariant(options.ttl > 0, 'TTL')
 
-    const to: string = validateAndParseAddress(options.recipient)
+    const trader: string = validateAndParseAddress(options.recipient)
     const amountIn: string = toHex(trade.maximumAmountIn(options.allowedSlippage))
-    const amountOut: string = toHex(trade.minimumAmountOut(options.allowedSlippage))
-    const path: string[] = trade.route.path.map(token => token.address)
+    // const amountOut: string = toHex(trade.minimumAmountOut(options.allowedSlippage))
+    // const path: string[] = trade.route.path.map(token => token.address)
     const deadline = `0x${(Math.floor(new Date().getTime() / 1000) + options.ttl).toString(16)}`
-    const useFeeOnTransfer = Boolean(options.feeOnTransfer)
+    // const useFeeOnTransfer = Boolean(options.feeOnTransfer)
+
+    console.log('--------------------- SwapParameters')
+    console.log('+++++++++++++++++++++ trade')
+    console.log(trade)
+    console.log('+++++++++++++++++++++ options')
+    console.log(options)
+
+    const leverageFactor = `0x${(options.leverageFactor || 1).toString(16)}`
+    const { isOpenPosition, lendable, tradeble } = options
 
     let methodName: string
     let args: (string | string[])[]
@@ -85,44 +107,32 @@ export abstract class Router {
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
         if (etherIn) {
-          methodName = useFeeOnTransfer ? 'swapExactETHForTokensSupportingFeeOnTransferTokens' : 'swapExactETHForTokens'
-          // (uint amountOutMin, address[] calldata path, address to, uint deadline)
-          args = [amountOut, path, to, deadline]
+          methodName = 'openPositionETH'
+          args = [leverageFactor, '0x0', tradeble, trader, deadline]
           value = amountIn
         } else if (etherOut) {
-          methodName = useFeeOnTransfer ? 'swapExactTokensForETHSupportingFeeOnTransferTokens' : 'swapExactTokensForETH'
-          // (uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, path, to, deadline]
+          methodName = 'closePositionETH'
+          args = [trader, amountIn, tradeble, deadline]
+          value = ZERO_HEX
+        } else if (isOpenPosition) {
+          methodName = 'openPosition'
+          args = [trader, amountIn, lendable, tradeble, leverageFactor, deadline]
           value = ZERO_HEX
         } else {
-          methodName = useFeeOnTransfer
-            ? 'swapExactTokensForTokensSupportingFeeOnTransferTokens'
-            : 'swapExactTokensForTokens'
-          // (uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, path, to, deadline]
+          methodName = 'closePosition'
+          args = [trader, amountIn, tradeble, deadline]
           value = ZERO_HEX
         }
         break
       case TradeType.EXACT_OUTPUT:
-        invariant(!useFeeOnTransfer, 'EXACT_OUT_FOT')
-        if (etherIn) {
-          methodName = 'swapETHForExactTokens'
-          // (uint amountOut, address[] calldata path, address to, uint deadline)
-          args = [amountOut, path, to, deadline]
-          value = amountIn
-        } else if (etherOut) {
-          methodName = 'swapTokensForExactETH'
-          // (uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, path, to, deadline]
-          value = ZERO_HEX
-        } else {
-          methodName = 'swapTokensForExactTokens'
-          // (uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, path, to, deadline]
-          value = ZERO_HEX
-        }
-        break
+        throw new Error('Unsupported method')
     }
+    console.log('--=-=-=-=-=-=-=-=-=-=-=-= Results  ')
+    console.log({
+      methodName,
+      args,
+      value
+    })
     return {
       methodName,
       args,
