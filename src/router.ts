@@ -35,10 +35,10 @@ export interface TradeOptions {
   /**
    * Set is open or close position
    */
-  isOpenPosition?: boolean
+  isOpenPosition: boolean
 
   tradeble: string
-  lendable: string
+  lendable?: string
 }
 
 /**
@@ -115,6 +115,9 @@ export abstract class Router {
           args = [trader, amountIn, tradeble, deadline]
           value = ZERO_HEX
         } else if (isOpenPosition) {
+          if (!lendable) {
+            throw new Error('Lendable is required for this transaction')
+          }
           methodName = 'openPosition'
           args = [trader, amountIn, lendable, tradeble, leverageFactor, deadline]
           value = ZERO_HEX

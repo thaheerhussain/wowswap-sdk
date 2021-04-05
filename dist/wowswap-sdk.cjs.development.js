@@ -1421,6 +1421,10 @@ var Router = /*#__PURE__*/function () {
           args = [trader, amountIn, tradeble, deadline];
           value = ZERO_HEX;
         } else if (isOpenPosition) {
+          if (!lendable) {
+            throw new Error('Lendable is required for this transaction');
+          }
+
           methodName = 'openPosition';
           args = [trader, amountIn, lendable, tradeble, leverageFactor, deadline];
           value = ZERO_HEX;

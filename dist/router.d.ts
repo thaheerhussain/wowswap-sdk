@@ -28,9 +28,9 @@ export interface TradeOptions {
     /**
      * Set is open or close position
      */
-    isOpenPosition?: boolean;
+    isOpenPosition: boolean;
     tradeble: string;
-    lendable: string;
+    lendable?: string;
 }
 /**
  * The parameters to use in the call to the Uniswap V2 Router to execute a trade.
