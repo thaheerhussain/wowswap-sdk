@@ -112,7 +112,7 @@ export abstract class Router {
           value = amountIn
         } else if (etherOut) {
           methodName = 'closePositionETH'
-          args = [trader, amountIn, tradeble, deadline]
+          args = [amountIn, '0x0', tradeble, trader, deadline]
           value = ZERO_HEX
         } else if (isOpenPosition) {
           if (!lendable) {
