@@ -92,7 +92,7 @@ export abstract class Router {
     const deadline = `0x${(Math.floor(new Date().getTime() / 1000) + options.ttl).toString(16)}`
     // const useFeeOnTransfer = Boolean(options.feeOnTransfer)
 
-    const leverageFactor = `${options.leverageFactor}`
+    const leverageFactor = `${options.leverageFactor?.toString(16)}`
     const { isOpenPosition, lendable, tradeble } = options
 
     let methodName: string
