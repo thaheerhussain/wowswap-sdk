@@ -14,7 +14,11 @@ describe('constants', () => {
     // })
     //TODO: Replace with real CheeseSwapPair.json
     it('matches computed bytecode hash', () => {
-      expect(INIT_CODE_HASH).toEqual('0xd0d4c4cd0848c93cb4fd1f498d7013ee6bfb25783ea21593d5834f5d250ece66')
+      expect(INIT_CODE_HASH).toEqual({
+        '56': '0xd0d4c4cd0848c93cb4fd1f498d7013ee6bfb25783ea21593d5834f5d250ece66',
+        '57': '0x1b67f076571ef46f58318c4ed9611ecc3080909f200fc4a310918b6f0595f4dd',
+        '97': '0xd0d4c4cd0848c93cb4fd1f498d7013ee6bfb25783ea21593d5834f5d250ece66'
+      })
     })
   })
 })

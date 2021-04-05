@@ -92,13 +92,7 @@ export abstract class Router {
     const deadline = `0x${(Math.floor(new Date().getTime() / 1000) + options.ttl).toString(16)}`
     // const useFeeOnTransfer = Boolean(options.feeOnTransfer)
 
-    console.log('--------------------- SwapParameters')
-    console.log('+++++++++++++++++++++ trade')
-    console.log(trade)
-    console.log('+++++++++++++++++++++ options')
-    console.log(options)
-
-    const leverageFactor = `0x${(options.leverageFactor || 1).toString(16)}`
+    const leverageFactor = `${options.leverageFactor}`
     const { isOpenPosition, lendable, tradeble } = options
 
     let methodName: string
@@ -119,23 +113,21 @@ export abstract class Router {
             throw new Error('Lendable is required for this transaction')
           }
           methodName = 'openPosition'
-          args = [trader, amountIn, lendable, tradeble, leverageFactor, deadline]
+          args = [amountIn, leverageFactor, '0x0', lendable, tradeble, trader, deadline]
           value = ZERO_HEX
         } else {
+          if (!lendable) {
+            throw new Error('Lendable is required for this transaction')
+          }
           methodName = 'closePosition'
-          args = [trader, amountIn, tradeble, deadline]
+          args = [amountIn, '0x0', lendable, tradeble, trader, deadline]
           value = ZERO_HEX
         }
         break
       case TradeType.EXACT_OUTPUT:
         throw new Error('Unsupported method')
     }
-    console.log('--=-=-=-=-=-=-=-=-=-=-=-= Results  ')
-    console.log({
-      methodName,
-      args,
-      value
-    })
+
     return {
       methodName,
       args,

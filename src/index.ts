@@ -1,4 +1,6 @@
 import JSBI from 'jsbi'
+
+import { ChainId } from './constants'
 export { JSBI }
 
 export {
@@ -15,8 +17,6 @@ export * from './errors'
 export * from './entities'
 export * from './router'
 export * from './fetcher'
-
-import { ChainId } from './constants'
 
 export const id = {
   _current: ChainId.MAINNET,
