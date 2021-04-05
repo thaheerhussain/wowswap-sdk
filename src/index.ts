@@ -21,9 +21,9 @@ import { ChainId } from './constants'
 export const id = {
   _current: ChainId.MAINNET,
   setId: function(id: ChainId) {
-    this._current = id;
+    this._current = id
   },
   getId: function() {
-    return this._current;
+    return this._current
   }
 }
