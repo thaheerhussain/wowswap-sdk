@@ -1,6 +1,8 @@
 import { TradeType } from './constants'
 import invariant from 'tiny-invariant'
 import { validateAndParseAddress } from './utils'
+import JSBI from 'jsbi'
+import { TEN } from './constants'
 import { CurrencyAmount, ETHER, Percent, Trade } from './entities'
 
 /**
@@ -92,7 +94,11 @@ export abstract class Router {
     const deadline = `0x${(Math.floor(new Date().getTime() / 1000) + options.ttl).toString(16)}`
     // const useFeeOnTransfer = Boolean(options.feeOnTransfer)
 
-    const leverageFactor = `${options.leverageFactor}`
+    const leverageFactor = `0x${JSBI.multiply(
+      JSBI.BigInt(options.leverageFactor || 1),
+      JSBI.exponentiate(TEN, JSBI.BigInt(4))
+    ).toString(16)}`
+
     const { isOpenPosition, lendable, tradeble } = options
 
     let methodName: string

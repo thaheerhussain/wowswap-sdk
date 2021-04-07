@@ -1386,8 +1386,6 @@ var Router = /*#__PURE__*/function () {
 
 
   Router.swapCallParameters = function swapCallParameters(trade, options) {
-    var _options$leverageFact;
-
     var etherIn = trade.inputAmount.currency === ETHER;
     var etherOut = trade.outputAmount.currency === ETHER; // the router does not support both ether in and out
 
@@ -1399,7 +1397,7 @@ var Router = /*#__PURE__*/function () {
 
     var deadline = "0x" + (Math.floor(new Date().getTime() / 1000) + options.ttl).toString(16); // const useFeeOnTransfer = Boolean(options.feeOnTransfer)
 
-    var leverageFactor = "" + ((_options$leverageFact = options.leverageFactor) === null || _options$leverageFact === void 0 ? void 0 : _options$leverageFact.toString(16));
+    var leverageFactor = "0x" + JSBI.multiply(JSBI.BigInt(options.leverageFactor || 1), JSBI.exponentiate(TEN, JSBI.BigInt(4))).toString(16);
     var isOpenPosition = options.isOpenPosition,
         lendable = options.lendable,
         tradeble = options.tradeble;
@@ -1441,11 +1439,6 @@ var Router = /*#__PURE__*/function () {
         throw new Error('Unsupported method');
     }
 
-    console.log({
-      methodName: methodName,
-      args: args,
-      value: value
-    });
     return {
       methodName: methodName,
       args: args,
